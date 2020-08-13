@@ -11,7 +11,7 @@ class UserController(
     fun getUser(@PathVariable id: UUID) = userService.readUser(id)
 
     @GetMapping("/users")
-    fun getUsers(@RequestParam dto: UserDto.SearchReq) = userService.searchUsers(dto)
+    fun getUsers(dto: UserDto.SearchReq?) = userService.searchUsers(dto)
 
     @PostMapping("/users")
     fun createUser(@RequestBody dto: UserDto.CreateReq) = userService.createUser(dto)

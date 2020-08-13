@@ -32,13 +32,13 @@ class UserService(
         return UserDto.CruRes.fromEntity(user)
     }
 
-    fun searchUsers(dto: UserDto.SearchReq): List<UserDto.CruRes> {
-        var users = if (dto.username != null)
+    fun searchUsers(dto: UserDto.SearchReq?): List<UserDto.CruRes> {
+        var users = if (dto?.username != null)
             userRepository.findAllByUsername(dto.username)
         else
             userRepository.findAll()
 
-        if (dto.password != null) {
+        if (dto?.password != null) {
             val encoded = passwordEncoder.encode(dto.password)
             users = users.filter { it.credential.password == encoded }
         }
