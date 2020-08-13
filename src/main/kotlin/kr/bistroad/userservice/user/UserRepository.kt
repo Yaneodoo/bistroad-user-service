@@ -7,6 +7,8 @@ import java.util.*
 
 @Repository
 interface UserRepository : JpaRepository<User, UUID> {
+    fun findAllByUsername(username: String): List<User>
+
     @Transactional
     fun removeById(id: UUID): Long
 }

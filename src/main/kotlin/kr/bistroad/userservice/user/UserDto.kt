@@ -11,6 +11,11 @@ interface UserDto {
             val role: UserRole
     )
 
+    data class SearchReq(
+            val username: String?,
+            val password: String?
+    )
+
     data class PatchReq(
             val username: String?,
             val password: String?,

@@ -32,9 +32,18 @@ class UserService(
         return UserDto.CruRes.fromEntity(user)
     }
 
-    fun searchUsers(): List<UserDto.CruRes> {
-        return userRepository.findAll()
-                .map(UserDto.CruRes.Companion::fromEntity)
+    fun searchUsers(dto: UserDto.SearchReq): List<UserDto.CruRes> {
+        var users = if (dto.username != null)
+            userRepository.findAllByUsername(dto.username)
+        else
+            userRepository.findAll()
+
+        if (dto.password != null) {
+            val encoded = passwordEncoder.encode(dto.password)
+            users = users.filter { it.credential.password == encoded }
+        }
+
+        return users.map(UserDto.CruRes.Companion::fromEntity)
     }
 
     fun patchUser(id: UUID, dto: UserDto.PatchReq): UserDto.CruRes {
