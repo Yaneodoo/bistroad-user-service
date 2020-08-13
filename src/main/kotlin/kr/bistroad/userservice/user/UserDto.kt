@@ -5,6 +5,7 @@ import java.util.*
 interface UserDto {
     data class CreateReq(
             val username: String,
+            val password: String,
             val fullName: String,
             val phone: String,
             val role: UserRole
@@ -12,6 +13,7 @@ interface UserDto {
 
     data class PatchReq(
             val username: String?,
+            val password: String?,
             val fullName: String?,
             val phone: String?,
             val role: UserRole?

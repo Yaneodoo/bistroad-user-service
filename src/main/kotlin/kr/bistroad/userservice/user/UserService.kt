@@ -1,6 +1,8 @@
 package kr.bistroad.userservice.user
 
 import org.springframework.data.repository.findByIdOrNull
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
 import java.util.*
 
@@ -8,13 +10,19 @@ import java.util.*
 class UserService(
         private val userRepository: UserRepository
 ) {
+    private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
+
     fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
+        val credential = UserCredential(password = passwordEncoder.encode(dto.password))
         val user = User(
+                credential = credential,
                 username = dto.username,
                 fullName = dto.fullName,
                 phone = dto.phone,
                 role = dto.role
         )
+        credential.user = user
+
         userRepository.save(user)
         return UserDto.CruRes.fromEntity(user)
     }
@@ -33,6 +41,7 @@ class UserService(
         val user = userRepository.findByIdOrNull(id) ?: error("User not found")
 
         if (dto.username != null) user.username = dto.username
+        if (dto.password != null) user.credential.password = passwordEncoder.encode(dto.password)
         if (dto.fullName != null) user.fullName = dto.fullName
         if (dto.phone != null) user.phone = dto.phone
         if (dto.role != null) user.role = dto.role
