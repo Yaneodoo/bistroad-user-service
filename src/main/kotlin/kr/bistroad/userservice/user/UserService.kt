@@ -39,8 +39,7 @@ class UserService(
             userRepository.findAll()
 
         if (dto?.password != null) {
-            val encoded = passwordEncoder.encode(dto.password)
-            users = users.filter { it.credential.password == encoded }
+            users = users.filter { passwordEncoder.matches(dto.password, it.credential.password) }
         }
 
         return users.map(UserDto.CruRes.Companion::fromEntity)
