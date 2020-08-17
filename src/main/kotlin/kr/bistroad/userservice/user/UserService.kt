@@ -13,6 +13,8 @@ class UserService(
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
     fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
+        check(userRepository.findAllByUsername(dto.username).isEmpty()) { "Username already exists" }
+
         val credential = UserCredential(password = passwordEncoder.encode(dto.password))
         val user = User(
             credential = credential,
