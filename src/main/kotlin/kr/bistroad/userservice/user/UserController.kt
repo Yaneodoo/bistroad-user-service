@@ -1,6 +1,7 @@
 package kr.bistroad.userservice.user
 
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -30,5 +31,9 @@ class UserController(
 
     @DeleteMapping("/users/{id}")
     @PreAuthorize("isAuthenticated() and (( #id == principal.userId ) or hasRole('ROLE_ADMIN'))")
-    fun deleteUser(@PathVariable id: UUID) = userService.deleteUser(id)
+    fun deleteUser(@PathVariable id: UUID): ResponseEntity<Void> =
+        if (userService.deleteUser(id))
+            ResponseEntity.noContent().build()
+        else
+            ResponseEntity.notFound().build()
 }
