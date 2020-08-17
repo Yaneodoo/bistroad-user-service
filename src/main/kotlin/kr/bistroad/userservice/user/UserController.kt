@@ -1,5 +1,6 @@
 package kr.bistroad.userservice.user
 
+import org.springframework.http.HttpStatus
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
 import java.util.*
@@ -16,6 +17,7 @@ class UserController(
 
     @PostMapping("/users")
     @PreAuthorize("( #dto.role.toString() != 'ROLE_ADMIN' ) or hasRole('ROLE_ADMIN')")
+    @ResponseStatus(HttpStatus.CREATED)
     fun createUser(@RequestBody dto: UserDto.CreateReq) = userService.createUser(dto)
 
     @PatchMapping("/users/{id}")
