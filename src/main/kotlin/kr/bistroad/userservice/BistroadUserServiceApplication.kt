@@ -11,5 +11,5 @@ import org.springframework.cloud.netflix.ribbon.RibbonClient
 class BistroadUserServiceApplication
 
 fun main(args: Array<String>) {
-	runApplication<BistroadUserServiceApplication>(*args)
+    runApplication<BistroadUserServiceApplication>(*args)
 }

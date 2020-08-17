@@ -8,18 +8,18 @@ import java.util.*
 
 @Service
 class UserService(
-        private val userRepository: UserRepository
+    private val userRepository: UserRepository
 ) {
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
     fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
         val credential = UserCredential(password = passwordEncoder.encode(dto.password))
         val user = User(
-                credential = credential,
-                username = dto.username,
-                fullName = dto.fullName,
-                phone = dto.phone,
-                role = dto.role
+            credential = credential,
+            username = dto.username,
+            fullName = dto.fullName,
+            phone = dto.phone,
+            role = dto.role
         )
         credential.user = user
 
