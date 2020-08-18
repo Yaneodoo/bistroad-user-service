@@ -1,5 +1,7 @@
 package kr.bistroad.userservice.user
 
+import kr.bistroad.userservice.exception.UserNotFoundException
+import kr.bistroad.userservice.exception.UsernameExistException
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -13,7 +15,7 @@ class UserService(
     private val passwordEncoder: PasswordEncoder = BCryptPasswordEncoder()
 
     fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
-        check(userRepository.findAllByUsername(dto.username).isEmpty()) { "Username already exists" }
+        if (userRepository.findAllByUsername(dto.username).isNotEmpty()) throw UsernameExistException()
 
         val credential = UserCredential(password = passwordEncoder.encode(dto.password))
         val user = User(
@@ -48,7 +50,7 @@ class UserService(
     }
 
     fun patchUser(id: UUID, dto: UserDto.PatchReq): UserDto.CruRes {
-        val user = userRepository.findByIdOrNull(id) ?: error("User not found")
+        val user = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
 
         if (dto.username != null) user.username = dto.username
         if (dto.password != null) user.credential.password = passwordEncoder.encode(dto.password)

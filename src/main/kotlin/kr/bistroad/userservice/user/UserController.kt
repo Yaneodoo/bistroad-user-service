@@ -1,5 +1,6 @@
 package kr.bistroad.userservice.user
 
+import kr.bistroad.userservice.exception.UserNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
@@ -11,10 +12,11 @@ class UserController(
     private val userService: UserService
 ) {
     @GetMapping("/users/{id}")
-    fun getUser(@PathVariable id: UUID) = userService.readUser(id)
+    fun getUser(@PathVariable id: UUID) =
+        userService.readUser(id) ?: throw UserNotFoundException()
 
     @GetMapping("/users")
-    fun getUsers(dto: UserDto.SearchReq?) = userService.searchUsers(dto)
+    fun getUsers(dto: UserDto.SearchReq?) =userService.searchUsers(dto)
 
     @PostMapping("/users")
     @PreAuthorize("( #dto.role.toString() != 'ROLE_ADMIN' ) or hasRole('ROLE_ADMIN')")
