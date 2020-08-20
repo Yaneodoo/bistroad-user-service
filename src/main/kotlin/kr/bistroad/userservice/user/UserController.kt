@@ -16,12 +16,12 @@ class UserController(
         userService.readUser(id) ?: throw UserNotFoundException()
 
     @GetMapping("/users")
-    fun getUsers(dto: UserDto.SearchReq?) =userService.searchUsers(dto)
+    fun getUsers(dto: UserDto.SearchReq?) = userService.searchUsers(dto)
 
     @PostMapping("/users")
     @PreAuthorize("( #dto.role.toString() != 'ROLE_ADMIN' ) or hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createUser(@RequestBody dto: UserDto.CreateReq) = userService.createUser(dto)
+    fun postUser(@RequestBody dto: UserDto.CreateReq) = userService.createUser(dto)
 
     @PatchMapping("/users/{id}")
     @PreAuthorize(
