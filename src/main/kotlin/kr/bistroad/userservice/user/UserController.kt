@@ -38,4 +38,8 @@ class UserController(
             ResponseEntity.noContent().build()
         else
             ResponseEntity.notFound().build()
+
+    @PostMapping("/users/{id}/verify-password")
+    fun verifyPassword(@PathVariable id: UUID, @RequestBody dto: UserDto.VerifyPasswordReq) =
+        userService.verifyPassword(id, dto)
 }

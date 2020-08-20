@@ -37,14 +37,10 @@ class UserService(
     }
 
     fun searchUsers(dto: UserDto.SearchReq?): List<UserDto.CruRes> {
-        var users = if (dto?.username != null)
+        val users = if (dto?.username != null)
             userRepository.findAllByUsername(dto.username)
         else
             userRepository.findAll()
-
-        if (dto?.password != null) {
-            users = users.filter { passwordEncoder.matches(dto.password, it.credential.password) }
-        }
 
         return users.map(UserDto.CruRes.Companion::fromEntity)
     }
@@ -65,5 +61,10 @@ class UserService(
     fun deleteUser(id: UUID): Boolean {
         val numDeleted = userRepository.removeById(id)
         return numDeleted > 0
+    }
+
+    fun verifyPassword(id: UUID, dto: UserDto.VerifyPasswordReq): Boolean {
+        val user = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
+        return passwordEncoder.matches(dto.password, user.credential.password)
     }
 }

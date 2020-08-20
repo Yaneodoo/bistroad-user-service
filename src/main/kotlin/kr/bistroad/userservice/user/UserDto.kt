@@ -12,8 +12,7 @@ interface UserDto {
     )
 
     data class SearchReq(
-        val username: String?,
-        val password: String?
+        val username: String?
     )
 
     data class PatchReq(
@@ -22,6 +21,10 @@ interface UserDto {
         val fullName: String?,
         val phone: String?,
         val role: UserRole?
+    )
+
+    data class VerifyPasswordReq(
+        val password: String
     )
 
     data class CruRes(
