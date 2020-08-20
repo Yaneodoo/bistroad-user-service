@@ -6,7 +6,7 @@ import org.springframework.transaction.annotation.Transactional
 import java.util.*
 
 @Repository
-interface UserRepository : JpaRepository<User, UUID> {
+interface UserRepository : JpaRepository<User, UUID>, UserRepositoryCustom {
     fun findAllByUsername(username: String): List<User>
 
     @Transactional
