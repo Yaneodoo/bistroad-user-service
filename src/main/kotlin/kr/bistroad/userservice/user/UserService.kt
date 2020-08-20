@@ -2,6 +2,7 @@ package kr.bistroad.userservice.user
 
 import kr.bistroad.userservice.exception.UserNotFoundException
 import kr.bistroad.userservice.exception.UsernameExistException
+import org.springframework.data.domain.Pageable
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
@@ -36,13 +37,9 @@ class UserService(
         return UserDto.CruRes.fromEntity(user)
     }
 
-    fun searchUsers(dto: UserDto.SearchReq?): List<UserDto.CruRes> {
-        val users = if (dto?.username != null)
-            userRepository.findAllByUsername(dto.username)
-        else
-            userRepository.findAll()
-
-        return users.map(UserDto.CruRes.Companion::fromEntity)
+    fun searchUsers(dto: UserDto.SearchReq, pageable: Pageable): List<UserDto.CruRes> {
+        return userRepository.search(dto, pageable)
+            .content.map(UserDto.CruRes.Companion::fromEntity)
     }
 
     fun patchUser(id: UUID, dto: UserDto.PatchReq): UserDto.CruRes {
