@@ -1,5 +1,7 @@
 package kr.bistroad.userservice.user
 
+import io.swagger.annotations.Api
+import io.swagger.annotations.ApiOperation
 import kr.bistroad.userservice.exception.UserNotFoundException
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
@@ -9,22 +11,27 @@ import org.springframework.web.bind.annotation.*
 import java.util.*
 
 @RestController
+@Api(tags = ["/users"])
 class UserController(
     private val userService: UserService
 ) {
     @GetMapping("/users/{id}")
+    @ApiOperation("\${swagger.doc.operation.user.get-user.description}")
     fun getUser(@PathVariable id: UUID) =
         userService.readUser(id) ?: throw UserNotFoundException()
 
     @GetMapping("/users")
+    @ApiOperation("\${swagger.doc.operation.user.get-users.description}")
     fun getUsers(dto: UserDto.SearchReq, pageable: Pageable) = userService.searchUsers(dto, pageable)
 
     @PostMapping("/users")
+    @ApiOperation("\${swagger.doc.operation.user.post-user.description}")
     @PreAuthorize("( #dto.role.toString() != 'ROLE_ADMIN' ) or hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun postUser(@RequestBody dto: UserDto.CreateReq) = userService.createUser(dto)
 
     @PatchMapping("/users/{id}")
+    @ApiOperation("\${swagger.doc.operation.user.patch-user.description}")
     @PreAuthorize(
         "isAuthenticated() and " +
                 "(( #id == principal.userId ) or hasRole('ROLE_ADMIN')) and " +
@@ -33,6 +40,7 @@ class UserController(
     fun patchUser(@PathVariable id: UUID, @RequestBody dto: UserDto.PatchReq) = userService.patchUser(id, dto)
 
     @DeleteMapping("/users/{id}")
+    @ApiOperation("\${swagger.doc.operation.user.delete-user.description}")
     @PreAuthorize("isAuthenticated() and (( #id == principal.userId ) or hasRole('ROLE_ADMIN'))")
     fun deleteUser(@PathVariable id: UUID): ResponseEntity<Void> =
         if (userService.deleteUser(id))
@@ -41,6 +49,7 @@ class UserController(
             ResponseEntity.notFound().build()
 
     @PostMapping("/users/{id}/verify-password")
+    @ApiOperation("\${swagger.doc.operation.user.verify-password.description}")
     fun verifyPassword(@PathVariable id: UUID, @RequestBody dto: UserDto.VerifyPasswordReq) =
         userService.verifyPassword(id, dto)
 }

@@ -5,3 +5,27 @@ spring:
     kubernetes:
       config:
         namespace: bistroad-prod
+swagger:
+  doc:
+    operation:
+      user:
+        get-user:
+          description: Get an user by ID
+        get-users:
+          description: Search users
+        post-user:
+          description: Create an user
+        patch-user:
+          description: Update an user partially
+        delete-user:
+          description: Delete an user
+        verify-password:
+          description: Verify a password of an user
+    model:
+      page:
+        page:
+          description: Page number
+        size:
+          description: Number of elements on a page
+        sort:
+          description: Sorting properties (e.g. sort=name,desc, sort=price,asc)
