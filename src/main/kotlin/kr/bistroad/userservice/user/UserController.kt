@@ -3,10 +3,12 @@ package kr.bistroad.userservice.user
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import kr.bistroad.userservice.exception.UserNotFoundException
+import kr.bistroad.userservice.security.UserPrincipal
 import org.springframework.data.domain.Pageable
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.security.access.prepost.PreAuthorize
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -19,6 +21,14 @@ class UserController(
     @ApiOperation("\${swagger.doc.operation.user.get-user.description}")
     fun getUser(@PathVariable id: UUID) =
         userService.readUser(id) ?: throw UserNotFoundException()
+
+    @GetMapping("/users/me")
+    @ApiOperation("\${swagger.doc.operation.user.get-user-me.description}")
+    @PreAuthorize("isAuthenticated()")
+    fun getUser(): UserDto.CruRes {
+        val principal = SecurityContextHolder.getContext().authentication.principal as UserPrincipal
+        return userService.readUser(principal.userId) ?: throw UserNotFoundException()
+    }
 
     @GetMapping("/users")
     @ApiOperation("\${swagger.doc.operation.user.get-users.description}")

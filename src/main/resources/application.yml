@@ -11,6 +11,8 @@ swagger:
       user:
         get-user:
           description: Get an user by ID
+        get-user-me:
+          description: Get an user profile from given token
         get-users:
           description: Search users
         post-user:
