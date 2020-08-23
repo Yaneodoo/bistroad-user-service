@@ -1,6 +1,5 @@
 package kr.bistroad.userservice.user
 
-import io.swagger.annotations.ApiModelProperty
 import java.util.*
 
 interface UserDto {
@@ -13,7 +12,6 @@ interface UserDto {
     )
 
     data class SearchReq(
-        @ApiModelProperty("\${swagger.doc.user.get-users.username}")
         val username: String?
     )
 
