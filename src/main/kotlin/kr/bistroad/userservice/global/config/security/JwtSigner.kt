@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.security
+package kr.bistroad.userservice.global.config.security
 
 import io.jsonwebtoken.Claims
 import io.jsonwebtoken.Jws

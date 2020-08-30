@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.security
+package kr.bistroad.userservice.global.config.security
 
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken

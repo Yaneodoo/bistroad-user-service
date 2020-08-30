@@ -1,4 +1,4 @@
-package kr.bistroad.userservice
+package kr.bistroad.userservice.global.config.swagger
 
 import com.fasterxml.classmate.TypeResolver
 import io.swagger.annotations.ApiModelProperty
@@ -9,9 +9,7 @@ import org.springframework.data.domain.Pageable
 import springfox.documentation.builders.ApiInfoBuilder
 import springfox.documentation.builders.PathSelectors.any
 import springfox.documentation.builders.RequestHandlerSelectors.basePackage
-import springfox.documentation.builders.RequestParameterBuilder
 import springfox.documentation.schema.AlternateTypeRules.newRule
-import springfox.documentation.service.ParameterType
 import springfox.documentation.service.Tag
 import springfox.documentation.spi.DocumentationType
 import springfox.documentation.spring.web.plugins.Docket

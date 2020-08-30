@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.exception
+package kr.bistroad.userservice.global.error.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.ResponseStatus

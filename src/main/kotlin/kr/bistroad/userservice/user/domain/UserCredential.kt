@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.user
+package kr.bistroad.userservice.user.domain
 
 import javax.persistence.*
 

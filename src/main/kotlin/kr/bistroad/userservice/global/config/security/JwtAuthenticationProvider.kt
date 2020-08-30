@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.security
+package kr.bistroad.userservice.global.config.security
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.KotlinModule

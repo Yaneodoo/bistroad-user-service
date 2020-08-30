@@ -1,5 +1,7 @@
-package kr.bistroad.userservice.user
+package kr.bistroad.userservice.user.application
 
+import kr.bistroad.userservice.user.domain.User
+import kr.bistroad.userservice.user.domain.UserRole
 import java.util.*
 
 interface UserDto {
@@ -35,13 +37,14 @@ interface UserDto {
         val role: UserRole
     ) {
         companion object {
-            fun fromEntity(user: User) = CruRes(
-                id = user.id!!,
-                username = user.username,
-                fullName = user.fullName,
-                phone = user.phone,
-                role = user.role
-            )
+            fun fromEntity(user: User) =
+                CruRes(
+                    id = user.id!!,
+                    username = user.username,
+                    fullName = user.fullName,
+                    phone = user.phone,
+                    role = user.role
+                )
         }
     }
 }

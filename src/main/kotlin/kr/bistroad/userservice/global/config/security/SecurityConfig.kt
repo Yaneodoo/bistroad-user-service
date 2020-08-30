@@ -1,4 +1,4 @@
-package kr.bistroad.userservice.security
+package kr.bistroad.userservice.global.config.security
 
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -24,7 +24,11 @@ class SecurityConfig(
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
-            .addFilter(JwtAuthorizationFilter(authenticationManager()))
+            .addFilter(
+                JwtAuthorizationFilter(
+                    authenticationManager()
+                )
+            )
             .authorizeRequests()
             .anyRequest().permitAll()
     }
