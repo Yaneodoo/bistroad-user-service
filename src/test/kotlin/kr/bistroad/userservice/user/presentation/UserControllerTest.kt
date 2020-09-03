@@ -57,7 +57,7 @@ internal class UserControllerTest {
 
     @Test
     fun `Returns forbidden when posting an admin user without permission`() {
-        val dto = UserDto.CreateReq(
+        val body = UserRequest.PostBody(
             username = "example",
             password = "example",
             fullName = "example",
@@ -68,15 +68,17 @@ internal class UserControllerTest {
         every { securityContext.authentication } returns
                 tokenOf(UUID.randomUUID(), UserRole.ROLE_USER)
 
-        val body = objectMapper.writeValueAsString(dto)
-        mockMvc.perform(post("/users").contentType(MediaType.APPLICATION_JSON).content(body))
-            .andExpect(status().isForbidden)
+        mockMvc.perform(
+            post("/users")
+                .content(objectMapper.writeValueAsString(body))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isForbidden)
     }
 
     @Test
     fun `Returns forbidden when patching a user to admin without permission`() {
         val userId = UUID.randomUUID()
-        val dto = UserDto.PatchReq(
+        val body = UserRequest.PatchBody(
             username = "example",
             password = "example",
             fullName = "example",
@@ -87,15 +89,17 @@ internal class UserControllerTest {
         every { securityContext.authentication } returns
                 tokenOf(UUID.randomUUID(), UserRole.ROLE_USER)
 
-        val body = objectMapper.writeValueAsString(dto)
-        mockMvc.perform(patch("/users/${userId}").contentType(MediaType.APPLICATION_JSON).content(body))
-            .andExpect(status().isForbidden)
+        mockMvc.perform(
+            patch("/users/${userId}")
+                .content(objectMapper.writeValueAsString(body))
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isForbidden)
     }
 
     @Test
     fun `Returns forbidden when deleting a user without permission`() {
         val userId = UUID.randomUUID()
-        every { userService.deleteUser(userId) } returns true
+        every { userService.deleteUser(UserDto.Delete(userId)) } returns true
 
         every { securityContext.authentication } returns
                 tokenOf(UUID.randomUUID(), UserRole.ROLE_USER)

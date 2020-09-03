@@ -1,7 +1,6 @@
 package kr.bistroad.userservice.user.infrastructure
 
 import com.querydsl.core.BooleanBuilder
-import kr.bistroad.userservice.user.application.UserDto
 import kr.bistroad.userservice.user.domain.QUser.user
 import kr.bistroad.userservice.user.domain.User
 import org.springframework.data.domain.Page
@@ -13,9 +12,9 @@ import org.springframework.stereotype.Component
 @Component
 class UserRepositoryImpl : QuerydslRepositorySupport(User::class.java),
     UserRepositoryCustom {
-    override fun search(dto: UserDto.SearchReq, pageable: Pageable): Page<User> {
+    override fun search(username: String?, pageable: Pageable): Page<User> {
         val booleanBuilder = BooleanBuilder()
-        if (dto.username != null) booleanBuilder.and(user.username.eq(dto.username))
+        if (username != null) booleanBuilder.and(user.username.eq(username))
 
         val query = from(user)
             .where(booleanBuilder)

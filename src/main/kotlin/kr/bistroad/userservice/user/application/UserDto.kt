@@ -5,7 +5,7 @@ import kr.bistroad.userservice.user.domain.UserRole
 import java.util.*
 
 interface UserDto {
-    data class CreateReq(
+    data class Create(
         val username: String,
         val password: String,
         val fullName: String,
@@ -13,11 +13,16 @@ interface UserDto {
         val role: UserRole
     )
 
-    data class SearchReq(
+    data class Read(
+        val id: UUID
+    )
+
+    data class Search(
         val username: String?
     )
 
-    data class PatchReq(
+    data class Update(
+        val id: UUID,
         val username: String?,
         val password: String?,
         val fullName: String?,
@@ -25,11 +30,16 @@ interface UserDto {
         val role: UserRole?
     )
 
-    data class VerifyPasswordReq(
+    data class Delete(
+        val id: UUID
+    )
+
+    data class VerifyPassword(
+        val id: UUID,
         val password: String
     )
 
-    data class CruRes(
+    data class Response(
         val id: UUID,
         val username: String,
         val fullName: String,
@@ -38,7 +48,7 @@ interface UserDto {
     ) {
         companion object {
             fun fromEntity(user: User) =
-                CruRes(
+                Response(
                     id = user.id!!,
                     username = user.username,
                     fullName = user.fullName,

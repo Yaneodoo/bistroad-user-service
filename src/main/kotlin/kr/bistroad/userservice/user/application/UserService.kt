@@ -10,7 +10,6 @@ import org.springframework.data.repository.findByIdOrNull
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
-import java.util.*
 
 @Service
 class UserService(
@@ -20,7 +19,7 @@ class UserService(
 
     fun encodePassword(rawPassword: String): String = passwordEncoder.encode(rawPassword)
 
-    fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
+    fun createUser(dto: UserDto.Create): UserDto.Response {
         if (userRepository.findAllByUsername(dto.username).isNotEmpty()) throw UsernameExistException()
 
         val user = User(
@@ -34,21 +33,24 @@ class UserService(
         )
 
         userRepository.save(user)
-        return UserDto.CruRes.fromEntity(user)
+        return UserDto.Response.fromEntity(user)
     }
 
-    fun readUser(id: UUID): UserDto.CruRes? {
-        val user = userRepository.findByIdOrNull(id) ?: return null
-        return UserDto.CruRes.fromEntity(user)
+    fun readUser(dto: UserDto.Read): UserDto.Response? {
+        val user = userRepository.findByIdOrNull(dto.id) ?: return null
+        return UserDto.Response.fromEntity(user)
     }
 
-    fun searchUsers(dto: UserDto.SearchReq, pageable: Pageable): List<UserDto.CruRes> {
-        return userRepository.search(dto, pageable)
-            .content.map(UserDto.CruRes.Companion::fromEntity)
+    fun searchUsers(dto: UserDto.Search, pageable: Pageable): List<UserDto.Response> {
+        return userRepository.search(
+            username = dto.username,
+            pageable = pageable
+        ).content
+            .map(UserDto.Response.Companion::fromEntity)
     }
 
-    fun patchUser(id: UUID, dto: UserDto.PatchReq): UserDto.CruRes {
-        val user = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
+    fun updateUser(dto: UserDto.Update): UserDto.Response {
+        val user = userRepository.findByIdOrNull(dto.id) ?: throw UserNotFoundException()
 
         if (dto.username != null) user.username = dto.username
         if (dto.password != null) user.credential.password = passwordEncoder.encode(dto.password)
@@ -57,16 +59,16 @@ class UserService(
         if (dto.role != null) user.role = dto.role
 
         userRepository.save(user)
-        return UserDto.CruRes.fromEntity(user)
+        return UserDto.Response.fromEntity(user)
     }
 
-    fun deleteUser(id: UUID): Boolean {
-        val numDeleted = userRepository.removeById(id)
+    fun deleteUser(dto: UserDto.Delete): Boolean {
+        val numDeleted = userRepository.removeById(dto.id)
         return numDeleted > 0
     }
 
-    fun verifyPassword(id: UUID, dto: UserDto.VerifyPasswordReq): Boolean {
-        val user = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
+    fun verifyPassword(dto: UserDto.VerifyPassword): Boolean {
+        val user = userRepository.findByIdOrNull(dto.id) ?: throw UserNotFoundException()
         return passwordEncoder.matches(dto.password, user.credential.password)
     }
 }

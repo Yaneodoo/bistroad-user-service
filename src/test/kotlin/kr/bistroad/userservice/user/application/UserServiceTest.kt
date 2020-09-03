@@ -29,7 +29,7 @@ internal class UserServiceTest {
 
     @Test
     fun `Throws error when creating with a already taken username`() {
-        val dto = CreateReq(
+        val dto = Create(
             username = "John",
             password = "example",
             fullName = "example",
@@ -50,18 +50,18 @@ internal class UserServiceTest {
 
     @Test
     fun `Throws error when patching with an invalid user id`() {
-        val userId = UUID.randomUUID()
-        val dto = PatchReq(
+        val dto = Update(
+            id = UUID.randomUUID(),
             username = "example",
             password = "example",
             fullName = "example",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
         )
-        every { userRepository.findByIdOrNull(userId) } returns null
+        every { userRepository.findByIdOrNull(dto.id) } returns null
 
         shouldThrow<UserNotFoundException> {
-            userService.patchUser(userId, dto)
+            userService.updateUser(dto)
         }
     }
 
@@ -80,15 +80,16 @@ internal class UserServiceTest {
         every { userRepository.findByIdOrNull(userId) } returns user
         every { userRepository.findByIdOrNull(not(userId)) } returns null
 
-        userService.verifyPassword(userId, VerifyPasswordReq("QrX2RqCpqY")).shouldBeTrue()
+        userService.verifyPassword(VerifyPassword(userId, "QrX2RqCpqY")).shouldBeTrue()
 
-        userService.verifyPassword(userId, VerifyPasswordReq("")).shouldBeFalse()
-        userService.verifyPassword(userId, VerifyPasswordReq("QrX2RqCpq")).shouldBeFalse()
-        userService.verifyPassword(userId, VerifyPasswordReq("QrX2RqCpqYa")).shouldBeFalse()
-        userService.verifyPassword(userId, VerifyPasswordReq("qrx2rqcpqy")).shouldBeFalse()
+        userService.verifyPassword(VerifyPassword(userId, "")).shouldBeFalse()
+        userService.verifyPassword(VerifyPassword(userId, "QrX2RqCpq")).shouldBeFalse()
+        userService.verifyPassword(VerifyPassword(userId, "QrX2RqCpqYa")).shouldBeFalse()
+        userService.verifyPassword(VerifyPassword(userId, "qrx2rqcpqy")).shouldBeFalse()
 
         shouldThrow<UserNotFoundException> {
-            userService.verifyPassword(UUID.randomUUID(), VerifyPasswordReq("QrX2RqCpqY"))
+            val otherUserId = UUID.randomUUID()
+            userService.verifyPassword(VerifyPassword(otherUserId, "QrX2RqCpqY"))
         }
     }
 }

@@ -4,12 +4,11 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
 import kr.bistroad.userservice.global.config.security.UserPrincipal
-import kr.bistroad.userservice.user.application.UserDto.CreateReq
-import kr.bistroad.userservice.user.application.UserDto.PatchReq
 import kr.bistroad.userservice.user.domain.User
 import kr.bistroad.userservice.user.domain.UserCredential
 import kr.bistroad.userservice.user.domain.UserRole
 import kr.bistroad.userservice.user.infrastructure.UserRepository
+import kr.bistroad.userservice.user.presentation.UserRequest
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -97,33 +96,33 @@ internal class UserIntegrationTests {
 
     @Test
     fun `Posts a user`() {
-        val dto = CreateReq(
+        val body = UserRequest.PostBody(
             username = "john",
             password = "VPlB3aWzlI",
             fullName = "John",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
         )
-        val body = objectMapper.writeValueAsString(dto)
 
         mockMvc.perform(
-            post("/users").content(body)
+            post("/users")
+                .content(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isCreated)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").exists())
-            .andExpect(jsonPath("\$.username").value(dto.username))
-            .andExpect(jsonPath("\$.fullName").value(dto.fullName))
-            .andExpect(jsonPath("\$.phone").value(dto.phone))
-            .andExpect(jsonPath("\$.role").value(dto.role.name))
+            .andExpect(jsonPath("\$.username").value(body.username))
+            .andExpect(jsonPath("\$.fullName").value(body.fullName))
+            .andExpect(jsonPath("\$.phone").value(body.phone))
+            .andExpect(jsonPath("\$.role").value(body.role.name))
 
         val users = userRepository.findAll()
         users.shouldBeSingleton()
-        users.first().username.shouldBe(dto.username)
-        users.first().fullName.shouldBe(dto.fullName)
-        users.first().phone.shouldBe(dto.phone)
-        users.first().role.shouldBe(dto.role)
+        users.first().username.shouldBe(body.username)
+        users.first().fullName.shouldBe(body.fullName)
+        users.first().phone.shouldBe(body.phone)
+        users.first().role.shouldBe(body.role)
     }
 
     @Test
@@ -137,35 +136,33 @@ internal class UserIntegrationTests {
         )
         userRepository.save(user)
 
-        val dto = PatchReq(
+        val body = UserRequest.PatchBody(
             username = null,
             password = "VPlB3aWzlI",
             fullName = "John David",
             phone = null,
             role = null
         )
-        val body = objectMapper.writeValueAsString(dto)
 
         SecurityContextHolder.getContext().authentication = tokenOf(user.id!!, UserRole.ROLE_USER)
 
         mockMvc.perform(
             patch("/users/${user.id!!}")
-                .content(body)
+                .content(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-        )
-            .andExpect(status().isOk)
+        ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(user.id!!.toString()))
             .andExpect(jsonPath("\$.username").value(user.username))
-            .andExpect(jsonPath("\$.fullName").value(dto.fullName!!))
+            .andExpect(jsonPath("\$.fullName").value(body.fullName!!))
             .andExpect(jsonPath("\$.phone").value(user.phone))
             .andExpect(jsonPath("\$.role").value(user.role.name))
 
         val users = userRepository.findAll()
         users.shouldBeSingleton()
         users.first().username.shouldBe(user.username)
-        users.first().fullName.shouldBe(dto.fullName)
+        users.first().fullName.shouldBe(body.fullName)
         users.first().phone.shouldBe(user.phone)
         users.first().role.shouldBe(user.role)
     }
@@ -192,8 +189,10 @@ internal class UserIntegrationTests {
 
         SecurityContextHolder.getContext().authentication = tokenOf(userA.id!!, UserRole.ROLE_USER)
 
-        mockMvc.perform(delete("/users/${userA.id!!}").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isNoContent)
+        mockMvc.perform(
+            delete("/users/${userA.id!!}")
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isNoContent)
             .andExpect(content().string(""))
 
         val users = userRepository.findAll()
