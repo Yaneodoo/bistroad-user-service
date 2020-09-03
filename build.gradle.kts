@@ -23,6 +23,7 @@ dependencies {
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+	testImplementation("io.kotest:kotest-assertions-core:4.2.2")
 
 	// Spring Boot
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -39,6 +40,7 @@ dependencies {
 
     // Spring Boot Security + JWT
     implementation("org.springframework.boot:spring-boot-starter-security")
+	testImplementation("org.springframework.security:spring-security-test")
     api("io.jsonwebtoken:jjwt-api:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
