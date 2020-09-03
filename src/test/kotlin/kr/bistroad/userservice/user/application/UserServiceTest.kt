@@ -40,7 +40,7 @@ internal class UserServiceTest {
             User(
                 username = "John", credential = UserCredential(password = "example"),
                 fullName = "example", phone = "010-0000-0000", role = UserRole.ROLE_USER
-            ).apply { credential.user = this }
+            )
         )
 
         shouldThrow<UsernameExistException> {
@@ -75,7 +75,7 @@ internal class UserServiceTest {
             fullName = "example",
             phone = "example",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
 
         every { userRepository.findByIdOrNull(userId) } returns user
         every { userRepository.findByIdOrNull(not(userId)) } returns null

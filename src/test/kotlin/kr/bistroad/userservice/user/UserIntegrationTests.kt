@@ -44,7 +44,7 @@ internal class UserIntegrationTests {
             fullName = "John",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
         userRepository.save(user)
 
         mockMvc.perform(get("/users/${user.id!!}").accept(MediaType.APPLICATION_JSON))
@@ -65,7 +65,7 @@ internal class UserIntegrationTests {
             fullName = "John",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
 
         val userB = User(
             credential = UserCredential(password = "example"),
@@ -73,7 +73,7 @@ internal class UserIntegrationTests {
             fullName = "Bob",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
 
         val userC = User(
             credential = UserCredential(password = "example"),
@@ -81,7 +81,7 @@ internal class UserIntegrationTests {
             fullName = "Chris",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
 
         userRepository.save(userA)
         userRepository.save(userB)
@@ -134,7 +134,7 @@ internal class UserIntegrationTests {
             fullName = "John",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
         userRepository.save(user)
 
         val dto = PatchReq(
@@ -178,14 +178,14 @@ internal class UserIntegrationTests {
             fullName = "example",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
         val userB = User(
             credential = UserCredential(password = "example"),
             username = "example2",
             fullName = "example",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
 
         userRepository.save(userA)
         userRepository.save(userB)

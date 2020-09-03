@@ -25,7 +25,7 @@ internal class UserRepositoryTest {
             fullName = "example",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
         userRepository.save(user)
 
         val foundUser = userRepository.findByIdOrNull(user.id!!)
@@ -35,19 +35,18 @@ internal class UserRepositoryTest {
         foundUser.id.shouldNotBeNull()
         foundUser.credential.shouldBe(credential)
         foundUser.credential.id.shouldNotBeNull()
+        foundUser.credential.user.shouldBe(user)
     }
 
     @Test
     fun `Deletes a user`() {
-        val credential =
-            UserCredential(password = "example")
         val user = User(
-            credential = credential,
+            credential = UserCredential(password = "example"),
             username = "example",
             fullName = "example",
             phone = "010-0000-0000",
             role = UserRole.ROLE_USER
-        ).apply { credential.user = this }
+        )
         userRepository.save(user)
 
         val userId = user.id!!

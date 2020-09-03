@@ -23,16 +23,15 @@ class UserService(
     fun createUser(dto: UserDto.CreateReq): UserDto.CruRes {
         if (userRepository.findAllByUsername(dto.username).isNotEmpty()) throw UsernameExistException()
 
-        val credential =
-            UserCredential(password = encodePassword(dto.password))
         val user = User(
-            credential = credential,
+            credential = UserCredential(
+                password = encodePassword(dto.password)
+            ),
             username = dto.username,
             fullName = dto.fullName,
             phone = dto.phone,
             role = dto.role
         )
-        credential.user = user
 
         userRepository.save(user)
         return UserDto.CruRes.fromEntity(user)

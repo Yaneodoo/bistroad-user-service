@@ -13,12 +13,14 @@ class User(
     @Column(columnDefinition = "BINARY(16)")
     val id: UUID? = null,
 
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "credentialId")
-    var credential: UserCredential,
+    credential: UserCredential,
 
     var username: String,
     var fullName: String,
     var phone: String,
     var role: UserRole
-)
+) {
+    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
+    @JoinColumn(name = "credentialId")
+    val credential: UserCredential = credential.apply { user = this@User }
+}
