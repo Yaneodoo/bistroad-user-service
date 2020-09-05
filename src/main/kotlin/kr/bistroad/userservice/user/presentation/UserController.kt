@@ -71,9 +71,7 @@ class UserController(
     @PatchMapping("/users/{id}")
     @ApiOperation("\${swagger.doc.operation.user.patch-user.description}")
     @PreAuthorize(
-        "isAuthenticated() and " +
-                "(( #id == principal.userId ) or hasRole('ROLE_ADMIN')) and " +
-                "( #body.role == null or hasRole('ROLE_ADMIN') )"
+        "isAuthenticated() and (( #id == principal.userId ) or ( #body.role == null ) or hasRole('ROLE_ADMIN') )"
     )
     fun patchUser(
         @PathVariable id: UUID,
