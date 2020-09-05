@@ -1,7 +1,6 @@
 package kr.bistroad.userservice.user.presentation
 
 import io.swagger.annotations.Api
-import io.swagger.annotations.ApiImplicitParam
 import io.swagger.annotations.ApiOperation
 import kr.bistroad.userservice.global.config.security.UserPrincipal
 import kr.bistroad.userservice.global.error.exception.UserNotFoundException
@@ -30,10 +29,6 @@ class UserController(
 
     @GetMapping("/users/me")
     @ApiOperation("\${swagger.doc.operation.user.get-user-me.description}")
-    @ApiImplicitParam(
-        name = "Authorization", value = "Access Token", required = true, paramType = "header",
-        allowEmptyValue = false, dataTypeClass = String::class, example = "Bearer access_token"
-    )
     @PreAuthorize("isAuthenticated()")
     fun getUser() = UserResponse.fromDto(
         userService.readUser(
@@ -57,10 +52,6 @@ class UserController(
 
     @PostMapping("/users")
     @ApiOperation("\${swagger.doc.operation.user.post-user.description}")
-    @ApiImplicitParam(
-        name = "Authorization", value = "Access Token", paramType = "header",
-        dataTypeClass = String::class, example = "Bearer access_token"
-    )
     @PreAuthorize("( #body.role.toString() != 'ROLE_ADMIN' ) or hasRole('ROLE_ADMIN')")
     @ResponseStatus(HttpStatus.CREATED)
     fun postUser(
@@ -79,10 +70,6 @@ class UserController(
 
     @PatchMapping("/users/{id}")
     @ApiOperation("\${swagger.doc.operation.user.patch-user.description}")
-    @ApiImplicitParam(
-        name = "Authorization", value = "Access Token", required = true, paramType = "header",
-        allowEmptyValue = false, dataTypeClass = String::class, example = "Bearer access_token"
-    )
     @PreAuthorize(
         "isAuthenticated() and " +
                 "(( #id == principal.userId ) or hasRole('ROLE_ADMIN')) and " +
@@ -106,10 +93,6 @@ class UserController(
 
     @DeleteMapping("/users/{id}")
     @ApiOperation("\${swagger.doc.operation.user.delete-user.description}")
-    @ApiImplicitParam(
-        name = "Authorization", value = "Access Token", required = true, paramType = "header",
-        allowEmptyValue = false, dataTypeClass = String::class, example = "Bearer access_token"
-    )
     @PreAuthorize("isAuthenticated() and (( #id == principal.userId ) or hasRole('ROLE_ADMIN'))")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteUser(
