@@ -11,23 +11,14 @@ import org.springframework.security.config.http.SessionCreationPolicy
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-class SecurityConfig(
-    private val jwtAuthenticationProvider: JwtAuthenticationProvider
-) : WebSecurityConfigurerAdapter() {
-
-    override fun configure(auth: AuthenticationManagerBuilder) {
-        auth.authenticationProvider(jwtAuthenticationProvider)
-    }
-
+class SecurityConfig : WebSecurityConfigurerAdapter() {
     override fun configure(http: HttpSecurity) {
         http
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .addFilter(
-                JwtAuthorizationFilter(
-                    authenticationManager()
-                )
+                AuthorizationFilter(authenticationManager())
             )
             .authorizeRequests()
             .anyRequest().permitAll()

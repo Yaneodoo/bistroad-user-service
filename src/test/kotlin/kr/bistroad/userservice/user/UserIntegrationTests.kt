@@ -3,7 +3,6 @@ package kr.bistroad.userservice.user
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.kotest.matchers.collections.shouldBeSingleton
 import io.kotest.matchers.shouldBe
-import kr.bistroad.userservice.global.config.security.UserPrincipal
 import kr.bistroad.userservice.user.domain.User
 import kr.bistroad.userservice.user.domain.UserCredential
 import kr.bistroad.userservice.user.domain.UserRole
@@ -14,14 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.http.MediaType
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
-import org.springframework.security.core.authority.SimpleGrantedAuthority
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 import org.springframework.transaction.annotation.Transactional
-import java.util.*
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -46,8 +41,10 @@ internal class UserIntegrationTests {
         )
         userRepository.save(user)
 
-        mockMvc.perform(get("/users/${user.id!!}").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk)
+        mockMvc.perform(
+            get("/users/${user.id!!}")
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.id").value(user.id!!.toString()))
             .andExpect(jsonPath("\$.username").value(user.username))
@@ -86,8 +83,10 @@ internal class UserIntegrationTests {
         userRepository.save(userB)
         userRepository.save(userC)
 
-        mockMvc.perform(get("/users?sort=fullName,desc").accept(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk)
+        mockMvc.perform(
+            get("/users?sort=fullName,desc")
+                .accept(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
             .andExpect(jsonPath("\$.[0].id").value(userA.id!!.toString()))
             .andExpect(jsonPath("\$.[1].id").value(userC.id!!.toString()))
@@ -144,10 +143,10 @@ internal class UserIntegrationTests {
             role = null
         )
 
-        SecurityContextHolder.getContext().authentication = tokenOf(user.id!!, UserRole.ROLE_USER)
-
         mockMvc.perform(
             patch("/users/${user.id!!}")
+                .header("Authorization-User-Id", user.id!!.toString())
+                .header("Authorization-Role", "ROLE_USER")
                 .content(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -187,10 +186,10 @@ internal class UserIntegrationTests {
         userRepository.save(userA)
         userRepository.save(userB)
 
-        SecurityContextHolder.getContext().authentication = tokenOf(userA.id!!, UserRole.ROLE_USER)
-
         mockMvc.perform(
             delete("/users/${userA.id!!}")
+                .header("Authorization-User-Id", userA.id!!.toString())
+                .header("Authorization-Role", "ROLE_USER")
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent)
             .andExpect(content().string(""))
@@ -199,9 +198,4 @@ internal class UserIntegrationTests {
         users.shouldBeSingleton()
         users.first().shouldBe(userB)
     }
-
-    private fun tokenOf(userId: UUID, role: UserRole) = UsernamePasswordAuthenticationToken(
-        UserPrincipal(userId, role), null,
-        mutableListOf(SimpleGrantedAuthority(role.name))
-    )
 }

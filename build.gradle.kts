@@ -38,12 +38,8 @@ dependencies {
 	runtimeOnly("mysql:mysql-connector-java")
 	testRuntimeOnly("com.h2database:h2")
 
-    // Spring Boot Security + JWT
+    // Spring Boot Security
     implementation("org.springframework.boot:spring-boot-starter-security")
-	testImplementation("org.springframework.security:spring-security-test")
-    api("io.jsonwebtoken:jjwt-api:0.11.2")
-    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.2")
-    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.2")
 
 	// Spring Cloud Kubernetes
 	implementation("org.springframework.cloud:spring-cloud-starter-kubernetes:1.1.4.RELEASE")

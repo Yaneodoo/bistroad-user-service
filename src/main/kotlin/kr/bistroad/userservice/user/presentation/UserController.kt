@@ -3,6 +3,7 @@ package kr.bistroad.userservice.user.presentation
 import io.swagger.annotations.Api
 import io.swagger.annotations.ApiOperation
 import kr.bistroad.userservice.global.config.security.UserPrincipal
+import kr.bistroad.userservice.global.error.exception.InsufficientAuthorizationException
 import kr.bistroad.userservice.global.error.exception.UserNotFoundException
 import kr.bistroad.userservice.user.application.UserDto
 import kr.bistroad.userservice.user.application.UserService
@@ -34,6 +35,7 @@ class UserController(
         userService.readUser(
             UserDto.Read(
                 id = UserPrincipal.ofCurrentContext().userId
+                    ?: throw InsufficientAuthorizationException()
             )
         ) ?: throw UserNotFoundException()
     )
