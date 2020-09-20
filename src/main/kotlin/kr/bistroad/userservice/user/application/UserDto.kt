@@ -5,50 +5,32 @@ import kr.bistroad.userservice.user.domain.UserRole
 import java.util.*
 
 interface UserDto {
-    data class Create(
+    data class ForCreate(
         val username: String,
         val password: String,
         val fullName: String,
         val phone: String,
         val role: UserRole
-    )
+    ) : UserDto
 
-    data class Read(
-        val id: UUID
-    )
-
-    data class Search(
-        val username: String?
-    )
-
-    data class Update(
-        val id: UUID,
+    data class ForUpdate(
         val username: String?,
         val password: String?,
         val fullName: String?,
         val phone: String?,
         val role: UserRole?
-    )
+    ) : UserDto
 
-    data class Delete(
-        val id: UUID
-    )
-
-    data class VerifyPassword(
-        val id: UUID,
-        val password: String
-    )
-
-    data class Response(
+    data class ForResult(
         val id: UUID,
         val username: String,
         val fullName: String,
         val phone: String,
         val role: UserRole
-    ) {
+    ) : UserDto {
         companion object {
             fun fromEntity(user: User) =
-                Response(
+                ForResult(
                     id = user.id!!,
                     username = user.username,
                     fullName = user.fullName,

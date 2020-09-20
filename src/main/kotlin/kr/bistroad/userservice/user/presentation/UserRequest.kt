@@ -3,7 +3,7 @@ package kr.bistroad.userservice.user.presentation
 import kr.bistroad.userservice.user.domain.UserRole
 
 interface UserRequest {
-    data class SearchParam(
+    data class SearchParams(
         val username: String?
     )
 

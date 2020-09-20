@@ -74,7 +74,7 @@ internal class UserControllerTest {
     @Test
     fun `Returns forbidden when deleting a user without permission`() {
         val userId = UUID.randomUUID()
-        every { userService.deleteUser(UserDto.Delete(userId)) } returns true
+        every { userService.deleteUser(userId) } returns true
 
         mockMvc.perform(
             delete("/users/${userId}")
