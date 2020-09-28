@@ -35,12 +35,7 @@ internal class UserServiceTest {
             phone = "example",
             role = UserRole.ROLE_USER
         )
-        every { userRepository.findAllByUsername("John") } returns listOf(
-            User(
-                username = "John", credential = UserCredential(password = "example"),
-                fullName = "example", phone = "010-0000-0000", role = UserRole.ROLE_USER
-            )
-        )
+        every { userRepository.existsByUsername("John") } returns true
 
         shouldThrow<UsernameExistException> {
             userService.createUser(dto)

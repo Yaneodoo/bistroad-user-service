@@ -21,7 +21,7 @@ class UserService(
     fun encodePassword(rawPassword: String): String = passwordEncoder.encode(rawPassword)
 
     fun createUser(dto: UserDto.ForCreate): UserDto.ForResult {
-        if (userRepository.findAllByUsername(dto.username).isNotEmpty()) throw UsernameExistException()
+        check(!userRepository.existsByUsername(dto.username)) { throw UsernameExistException() }
 
         val user = User(
             credential = UserCredential(

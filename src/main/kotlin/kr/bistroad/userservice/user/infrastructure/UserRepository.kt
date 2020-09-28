@@ -1,16 +1,10 @@
 package kr.bistroad.userservice.user.infrastructure
 
 import kr.bistroad.userservice.user.domain.User
-import org.springframework.data.jpa.repository.JpaRepository
-import org.springframework.stereotype.Repository
-import org.springframework.transaction.annotation.Transactional
+import org.springframework.data.mongodb.repository.MongoRepository
 import java.util.*
 
-@Repository
-interface UserRepository : JpaRepository<User, UUID>,
-    UserRepositoryCustom {
-    fun findAllByUsername(username: String): List<User>
-
-    @Transactional
+interface UserRepository : MongoRepository<User, UUID>, UserRepositoryCustom {
+    fun existsByUsername(username: String): Boolean
     fun removeById(id: UUID): Long
 }

@@ -1,26 +1,17 @@
 package kr.bistroad.userservice.user.domain
 
-import org.hibernate.annotations.GenericGenerator
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
-import javax.persistence.*
 
-@Entity
-@Table(name = "users")
-class User(
+@Document(collection = "users")
+data class User(
     @Id
-    @GeneratedValue(generator = "uuid2")
-    @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(columnDefinition = "BINARY(16)")
-    val id: UUID? = null,
+    val id: UUID = UUID.randomUUID(),
 
-    credential: UserCredential,
-
+    val credential: UserCredential,
     var username: String,
     var fullName: String,
     var phone: String,
     var role: UserRole
-) {
-    @OneToOne(cascade = [CascadeType.ALL], fetch = FetchType.EAGER, orphanRemoval = true)
-    @JoinColumn(name = "credentialId")
-    val credential: UserCredential = credential.apply { user = this@User }
-}
+)

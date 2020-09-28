@@ -31,7 +31,7 @@ interface UserDto {
         companion object {
             fun fromEntity(user: User) =
                 ForResult(
-                    id = user.id!!,
+                    id = user.id,
                     username = user.username,
                     fullName = user.fullName,
                     phone = user.phone,

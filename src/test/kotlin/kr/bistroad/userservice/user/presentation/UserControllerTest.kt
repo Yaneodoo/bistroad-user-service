@@ -3,7 +3,6 @@ package kr.bistroad.userservice.user.presentation
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.every
-import kr.bistroad.userservice.user.application.UserDto
 import kr.bistroad.userservice.user.application.UserService
 import kr.bistroad.userservice.user.domain.UserRole
 import org.junit.jupiter.api.Test

@@ -1,20 +1,25 @@
 package kr.bistroad.userservice.user.infrastructure
 
-import io.kotest.matchers.booleans.shouldBeFalse
+import io.kotest.matchers.collections.shouldBeEmpty
+import io.kotest.matchers.nulls.shouldBeNull
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import kr.bistroad.userservice.user.domain.User
 import kr.bistroad.userservice.user.domain.UserCredential
 import kr.bistroad.userservice.user.domain.UserRole
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest
+import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
 import org.springframework.data.repository.findByIdOrNull
 
-@DataJpaTest
+@DataMongoTest
 internal class UserRepositoryTest {
     @Autowired
     private lateinit var userRepository: UserRepository
+
+    @AfterEach
+    fun clear() = userRepository.deleteAll()
 
     @Test
     fun `Saves a user`() {
@@ -28,14 +33,10 @@ internal class UserRepositoryTest {
         )
         userRepository.save(user)
 
-        val foundUser = userRepository.findByIdOrNull(user.id!!)
+        val foundUser = userRepository.findByIdOrNull(user.id)
 
         foundUser.shouldNotBeNull()
         foundUser.shouldBe(user)
-        foundUser.id.shouldNotBeNull()
-        foundUser.credential.shouldBe(credential)
-        foundUser.credential.id.shouldNotBeNull()
-        foundUser.credential.user.shouldBe(user)
     }
 
     @Test
@@ -49,9 +50,10 @@ internal class UserRepositoryTest {
         )
         userRepository.save(user)
 
-        val userId = user.id!!
+        val userId = user.id
         userRepository.deleteById(userId)
 
-        userRepository.findById(userId).isPresent.shouldBeFalse()
+        userRepository.findByIdOrNull(userId).shouldBeNull()
+        userRepository.findAll().shouldBeEmpty()
     }
 }

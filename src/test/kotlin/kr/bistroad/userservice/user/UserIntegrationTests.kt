@@ -8,6 +8,7 @@ import kr.bistroad.userservice.user.domain.UserCredential
 import kr.bistroad.userservice.user.domain.UserRole
 import kr.bistroad.userservice.user.infrastructure.UserRepository
 import kr.bistroad.userservice.user.presentation.UserRequest
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
@@ -16,11 +17,9 @@ import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
-import org.springframework.transaction.annotation.Transactional
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Transactional
 internal class UserIntegrationTests {
     @Autowired
     private lateinit var mockMvc: MockMvc
@@ -29,6 +28,9 @@ internal class UserIntegrationTests {
     private lateinit var userRepository: UserRepository
 
     private val objectMapper: ObjectMapper = ObjectMapper()
+
+    @AfterEach
+    fun clear() = userRepository.deleteAll()
 
     @Test
     fun `Gets a user`() {
@@ -42,11 +44,11 @@ internal class UserIntegrationTests {
         userRepository.save(user)
 
         mockMvc.perform(
-            get("/users/${user.id!!}")
+            get("/users/${user.id}")
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.id").value(user.id!!.toString()))
+            .andExpect(jsonPath("\$.id").value(user.id.toString()))
             .andExpect(jsonPath("\$.username").value(user.username))
             .andExpect(jsonPath("\$.fullName").value(user.fullName))
             .andExpect(jsonPath("\$.phone").value(user.phone))
@@ -88,9 +90,9 @@ internal class UserIntegrationTests {
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.[0].id").value(userA.id!!.toString()))
-            .andExpect(jsonPath("\$.[1].id").value(userC.id!!.toString()))
-            .andExpect(jsonPath("\$.[2].id").value(userB.id!!.toString()))
+            .andExpect(jsonPath("\$.[0].username").value(userA.username))
+            .andExpect(jsonPath("\$.[1].username").value(userC.username))
+            .andExpect(jsonPath("\$.[2].username").value(userB.username))
     }
 
     @Test
@@ -144,15 +146,15 @@ internal class UserIntegrationTests {
         )
 
         mockMvc.perform(
-            patch("/users/${user.id!!}")
-                .header("Authorization-User-Id", user.id!!.toString())
+            patch("/users/${user.id}")
+                .header("Authorization-User-Id", user.id.toString())
                 .header("Authorization-Role", "ROLE_USER")
                 .content(objectMapper.writeValueAsString(body))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isOk)
             .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-            .andExpect(jsonPath("\$.id").value(user.id!!.toString()))
+            .andExpect(jsonPath("\$.id").value(user.id.toString()))
             .andExpect(jsonPath("\$.username").value(user.username))
             .andExpect(jsonPath("\$.fullName").value(body.fullName!!))
             .andExpect(jsonPath("\$.phone").value(user.phone))
@@ -187,8 +189,8 @@ internal class UserIntegrationTests {
         userRepository.save(userB)
 
         mockMvc.perform(
-            delete("/users/${userA.id!!}")
-                .header("Authorization-User-Id", userA.id!!.toString())
+            delete("/users/${userA.id}")
+                .header("Authorization-User-Id", userA.id.toString())
                 .header("Authorization-Role", "ROLE_USER")
                 .accept(MediaType.APPLICATION_JSON)
         ).andExpect(status().isNoContent)
