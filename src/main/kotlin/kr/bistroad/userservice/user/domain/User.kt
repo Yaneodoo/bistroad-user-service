@@ -9,7 +9,7 @@ data class User(
     @Id
     val id: UUID = UUID.randomUUID(),
 
-    val credential: UserCredential,
+    var credential: UserCredential,
     var username: String,
     var fullName: String,
     var phone: String,

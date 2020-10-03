@@ -56,7 +56,7 @@ class UserService(
         val user = userRepository.findByIdOrNull(id) ?: throw UserNotFoundException()
 
         if (dto.username != null) user.username = dto.username
-        if (dto.password != null) user.credential.password = passwordEncoder.encode(dto.password)
+        if (dto.password != null) user.credential = UserCredential(passwordEncoder.encode(dto.password))
         if (dto.fullName != null) user.fullName = dto.fullName
         if (dto.phone != null) user.phone = dto.phone
         if (dto.role != null) user.role = dto.role
