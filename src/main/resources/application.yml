@@ -23,6 +23,8 @@ swagger:
           description: Delete an user
         verify-password:
           description: Verify a password of an user
+        post-user-photo:
+          description: Upload a user photo
     model:
       page:
         page:

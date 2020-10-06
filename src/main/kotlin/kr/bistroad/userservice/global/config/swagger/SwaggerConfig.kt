@@ -31,7 +31,10 @@ class SwaggerConfig(
         .apiInfo(
             ApiInfoBuilder().title("User API").build()
         )
-        .tags(Tag("/users", "User API"))
+        .tags(
+            Tag("/users", "User API"),
+            Tag("/users/*/photo", "User Photo API")
+        )
         .alternateTypeRules(
             newRule(
                 typeResolver.resolve(Pageable::class.java),

@@ -13,5 +13,6 @@ data class User(
     var username: String,
     var fullName: String,
     var phone: String,
-    var role: UserRole
+    var role: UserRole,
+    var photo: Photo? = null
 )

@@ -42,8 +42,17 @@ dependencies {
 	implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-config:1.1.4.RELEASE")
 	implementation("org.springframework.cloud:spring-cloud-starter-kubernetes-ribbon:1.1.4.RELEASE")
 
+	// Spring Cloud GCP
+	implementation("org.springframework.cloud:spring-cloud-gcp-starter-storage:1.2.5.RELEASE")
+
 	// Swagger
 	implementation("io.springfox:springfox-boot-starter:3.0.0")
+
+	// Apache Commons IO
+	implementation("commons-io:commons-io:2.6")
+
+	// Thumbnailator
+	implementation("net.coobird:thumbnailator:0.4.11")
 }
 
 tasks.withType<Test> {
