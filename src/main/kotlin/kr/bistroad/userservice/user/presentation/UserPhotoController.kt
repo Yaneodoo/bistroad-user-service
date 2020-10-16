@@ -18,8 +18,6 @@ class UserPhotoController(
     @PostMapping("/users/{id}/photo", consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     @ApiOperation("\${swagger.doc.operation.user.post-user-photo.description}")
     @PreAuthorize("isAuthenticated() and (( #id == principal.userId ) or hasRole('ROLE_ADMIN'))")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun postPhoto(@PathVariable id: UUID, @RequestPart file: MultipartFile) {
+    fun postPhoto(@PathVariable id: UUID, @RequestPart file: MultipartFile) =
         userPhotoService.upload(id, file)
-    }
 }

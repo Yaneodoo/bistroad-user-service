@@ -35,7 +35,7 @@ class UserPhotoService(
 
     private val userRepository: UserRepository
 ) {
-    fun upload(userId: UUID, file: MultipartFile) {
+    fun upload(userId: UUID, file: MultipartFile): UserDto.ForResult {
         require(file.contentType in ALLOWED_CONTENT_TYPES) { throw InvalidFileTypeException() }
         check(storage != null)
 
@@ -52,6 +52,8 @@ class UserPhotoService(
             thumbnailUrl = "$PUBLIC_URL/$bucketName/${thumbnailBlob.name}"
         )
         userRepository.save(user)
+
+        return UserDto.ForResult.fromEntity(user)
     }
 
     private fun createBlobFrom(inputStream: InputStream, fileName: String) =
